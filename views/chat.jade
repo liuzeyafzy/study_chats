@@ -1,0 +1,14 @@
+extends layout
+
+block content
+  h1 你好，#{user}
+  p Welcome to your home
+  p
+    a(href="/logout") 我要注销
+
+  div(class="chat")
+    div(class="message_show")
+    div(class="message_send")
+
+block script
+  //script(src="/javascripts/chat.js")

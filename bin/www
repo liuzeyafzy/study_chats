@@ -5,21 +5,30 @@
  */
 
 var app = require('../app');
-var debug = require('debug')('study_chats:server');
+var debug = require('debug')('express:server');
+var fs = require('fs');
 var http = require('http');
+var https = require('https');
+var privateKey = fs.readFileSync('ssl/client.key', 'utf8');
+var certificate = fs.readFileSync('ssl/client.crt', 'utf8');
 
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3000');
+var port = normalizePort(process.env.PORT || '443');
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+//var server = http.createServer(app);
+var server = https.createServer({key: privateKey, cert: certificate}, app);
+var io = require('socket.io')(server);
+io.on('connection', function(socket){
+  console.log('a user connected');
+});
 
 /**
  * Listen on provided port, on all network interfaces.
