@@ -24,7 +24,7 @@ app.set('port', port);
  */
 
 //var server = http.createServer(app);
-var server = https.createServer({key: privateKey, cert: certificate}, app);
+var server = https.createServer({key: privateKey, cert: certificate, passphrase:'as123456'}, app);
 var io = require('socket.io')(server);
 io.on('connection', function(socket){
   console.log('a user connected');
