@@ -1,3 +1,5 @@
 #ssl
 client.crt
 
+nohup.out
+npm-debug.log
