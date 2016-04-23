@@ -15,13 +15,20 @@ var users = require('./routes/users');
 
 //Begin added for mongoose
 global.dbHandel = require('./database/dbHandel');
-global.db = mongoose.connect("mongodb://nodedb:passwd@localhost:27017/nodedb");
+try{
+    // global.db = mongoose.connect("mongodb://localhost:27017/nodedb");
+    global.db = mongoose.connect("mongodb://nodedb:passwd@localhost:27017/nodedb");
+    global.on('error', console.log('connection error.'));// you can get error on process.
+}catch(e){
+    console.log('connect monbodb failed.');
+}
+
 //End added for mongoose
 var app = express();
 //Begin added for mongoose
-// app.use(session({ 
+// app.use(session({
 //   secret: 'secret',
-//   cookie:{ 
+//   cookie:{
 //     maxAge: 1000*60*30
 //   },
 //   resave: false,
@@ -47,18 +54,18 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 //Begin added for mongoose
-app.use(multer());
+// app.use(multer());
 //End added for mongoose
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Begin added for mongoose
-app.use(function(req,res,next){ 
+app.use(function(req,res,next){
   res.locals.user = req.session.user;
   var err = req.session.error;
   delete req.session.error;
   res.locals.message = "";
-  if(err){ 
+  if(err){
     res.locals.message = '<div class="alert alert-danger" style="margin-bottom:20px;color:red;">'+err+'</div>';
   }
   next();
