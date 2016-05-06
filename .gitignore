@@ -1,4 +1,5 @@
 ssl/
+node_modules/
 client.crt
 
 nohup.out
