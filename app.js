@@ -18,7 +18,6 @@ global.dbHandel = require('./database/dbHandel');
 try{
     // global.db = mongoose.connect("mongodb://localhost:27017/nodedb");
     global.db = mongoose.connect("mongodb://nodedb:passwd@localhost:27017/nodedb");
-    global.on('error', console.log('connection error.'));// you can get error on process.
 }catch(e){
     console.log('connect monbodb failed.');
 }
