@@ -17,7 +17,7 @@ var users = require('./routes/users');
 global.dbHandel = require('./database/dbHandel');
 try{
     // global.db = mongoose.connect("mongodb://localhost:27017/nodedb");
-    global.db = mongoose.connect("mongodb://nodedb:passwd@localhost:27017/nodedb");
+    global.db = mongoose.connect("mongodb://nodedb:passwd@liuzeyafzy.com:27017/nodedb");
 }catch(e){
     console.log('connect monbodb failed.');
 }

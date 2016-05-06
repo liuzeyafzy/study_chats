@@ -14,7 +14,7 @@ var https = require('https');
  * Create HTTP server.
  * Cannot find another way to find whether the file exist or not.
  */
-try{
+//try{
     var privateKey = fs.readFileSync('ssl/client.key', 'utf8');
     var certificate = fs.readFileSync('ssl/client.crt', 'utf8');
     /**
@@ -23,11 +23,11 @@ try{
     var port = normalizePort(process.env.PORT || '443');
     app.set('port', port);
     var server = https.createServer({key: privateKey, cert: certificate, passphrase:'as123456'}, app);
-}catch(e){
-    var port = normalizePort(process.env.PORT || '80');
-    app.set('port', port);
-    var server = http.createServer(app);
-}
+//}catch(e){
+    //var port = normalizePort(process.env.PORT || '80');
+    //app.set('port', port);
+    //var server = http.createServer(app);
+//}
 
 var io = require('socket.io')(server);
 io.on('connection', function(socket){
