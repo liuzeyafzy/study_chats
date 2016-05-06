@@ -1,4 +1,4 @@
-#ssl
+ssl/
 client.crt
 
 nohup.out
