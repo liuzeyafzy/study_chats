@@ -12,7 +12,6 @@ var session = require('express-session');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-var bootstrap = require('./routes/bootstrap');
 
 //Begin added for mongoose
 global.dbHandel = require('./database/dbHandel');
@@ -74,7 +73,6 @@ app.use(function(req,res,next){
 
 app.use('/', routes);
 app.use('/users', users);
-app.use('/bootstrap', bootstrap);
 //app.use(express.static('static'));
 app.use('/error', function(req, res, next){
   res.status(err.status || 500).render('error', {
