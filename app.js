@@ -12,6 +12,7 @@ var session = require('express-session');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var bootstrap = require('./routes/bootstrap');
 
 //Begin added for mongoose
 global.dbHandel = require('./database/dbHandel');
