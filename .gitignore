@@ -4,3 +4,5 @@ client.crt
 
 nohup.out
 npm-debug.log
+
+.DS_Store
