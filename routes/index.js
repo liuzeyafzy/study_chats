@@ -53,12 +53,13 @@ router.post('/register', function(req, res, next) {
   var password = req.body.password;
   User.findOne({name:uname}, function(err, doc){
     if(err){
-      res.send(500);
+      res.sendStatus(500);
       res.session.error = '网络异常错误';
       console.log(err);
     }else if(doc){
       req.session.error = '用户名已存在';
-      res.send(500);
+      res.sendStatus(500);
+      console.log('用户名已存在');
     }else{
       var salt = bcrypt.genSaltSync();
       User.create({
@@ -66,7 +67,7 @@ router.post('/register', function(req, res, next) {
         password: bcrypt.hashSync(password, salt)
       }, function(err, doc){
         if(err){
-          res.send(500);
+          res.sendStatus(500);
           console.log(err);
         }else{
           req.session.error = '用户名创建成功！';
