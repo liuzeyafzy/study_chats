@@ -21,34 +21,25 @@ try{
 }catch(e){
     console.log('connect monbodb failed.');
 }
-
 //End added for mongoose
+
 var app = express();
-//Begin added for mongoose
-// app.use(session({
-//   secret: 'secret',
-//   cookie:{
-//     maxAge: 1000*60*30
-//   },
-//   resave: false,
-//   saveUninitialized: true
-// }));
 app.use(session({
   secret: 'secret',
   cookie:{
     maxAge: 1000*60*30
   },
-  resave: true,
+  resave: false,
   saveUninitialized: true
 }));
-//End added for mongoose
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon('blob:https%3A//drive.google.com/037b727b-fb19-43b1-bdb3-f5f1b5b17c38'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
