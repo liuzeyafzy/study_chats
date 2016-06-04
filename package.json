@@ -16,6 +16,7 @@
     "express-session": "^1.12.1",
     "jade": "~1.11.0",
     "ejs": "~2.3.3",
+    "swig": "",
     "mongoose": "^4.4.13",
     "morgan": "~1.6.1",
     "multer": "^1.1.0",

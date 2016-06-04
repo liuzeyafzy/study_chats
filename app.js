@@ -9,6 +9,7 @@ var multer = require('multer');
 var mongoose = require('mongoose');
 var session = require('express-session');
 //End added for mongoose
+var swig = require('swig');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -36,7 +37,9 @@ app.use(session({
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
-app.set('view engine', 'ejs');
+// app.set('view engine', 'ejs');
+app.engine('html', swig.renderFile)
+app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
