@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h1>你好，{{user}}</h1>
+    <p>Welcome to your home</p>
+    <p>
+        <a href="/logout">我要注销</a>
+    </p>
+    <div class="chat">
+        <div class="message_show"></div>
+        <div class="message_send"></div>
+    </div>
+{% endblock %}

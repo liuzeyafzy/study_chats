@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+{% block content %}
+    <style>
+        .register-title{
+          margin-left:20px;
+        }
+        .register-rows{
+          margin: 10px 0;
+        }
+        .register-rows-name{
+          float: left;
+          width: 80px;
+          text-align: center;
+        }
+        .register-btn{
+          display: inline-block;
+          margin-left: 50px;
+          width: 150px;
+          height: 35px;
+          line-height: 35px;
+          background-color: #E42D2D;
+          text-align: center;
+          color: #fff;
+          cursor: pointer;
+          border-radius: 5px;
+        }
+    </style>
+    <p class="register-title">欢迎注册。</p>
+    <div class="register-rows">
+        <span class="register-rows-name">用户名：</span>
+        <input type="text" class="register-username" />
+    </div>
+    <div class="register-rows">
+        <span class="register-rows-name">密码：</span>
+        <input type="text" class="register-password" />
+    </div>
+    <div class="register-rows">
+        <a class="register-btn">注册</a>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="/javascripts/register.js"></script>
+{% endblock %}
