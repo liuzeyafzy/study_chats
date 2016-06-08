@@ -1,30 +1,20 @@
 var express = require('express');
+var session = require('express-session');
+var swig = require('swig');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-//Begin added for mongoose
+var express = require('express');
 var multer = require('multer');
+
 var mongoose = require('mongoose');
-var session = require('express-session');
-//End added for mongoose
-var swig = require('swig');
-
-var routes = require('./routes/index');
-var users = require('./routes/users');
-
-//Begin added for mongoose
-global.dbHandel = require('./database/dbHandel');
-try{
-    global.db = mongoose.connect("mongodb://localhost:27017/nodedb");
-   // global.db = mongoose.connect("mongodb://nodedb:passwd@liuzeyafzy.com:27017/nodedb");
-}catch(e){
-    console.log('connect monbodb failed.');
-}
-//End added for mongoose
+var router = require('./routes/router');
+const config = require(path.join(process.cwd(), 'config', 'config'));
 
 var app = express();
+
 app.use(session({
   secret: 'secret',
   cookie:{
@@ -35,7 +25,7 @@ app.use(session({
 }));
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(process.cwd(), 'views'));
 // app.set('view engine', 'jade');
 // app.set('view engine', 'ejs');
 app.engine('html', swig.renderFile)
@@ -43,7 +33,7 @@ app.set('view engine', 'html');
 
 // uncomment after placing your favicon in /public
 // app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(favicon(__dirname + '/public/favicon.ico'));
+app.use(favicon(path.join(process.cwd(), '/public/favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -51,47 +41,22 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(multer());
 //End added for mongoose
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(process.cwd(), 'public')));
+app.use(function(req, res, next){
+    //中间件，非外部域名不加载mongodb
+    if (config.get('hostnameRegExp').test(req.hostname)) {
+        global.dbHandel = require('./database/dbHandel');
+        try{
+            global.db = mongoose.connect("mongodb://localhost:27017/nodedb");
+        }catch(e){
+            console.log('connect monbodb failed.');
+        }
+    }
 
-//Begin added for mongoose
-app.use(function(req,res,next){
-  res.locals.user = req.session.user;
-  var err = req.session.error;
-  delete req.session.error;
-  res.locals.message = "";
-  if(err){
-    res.locals.message = '<div class="alert alert-danger" style="margin-bottom:20px;color:red;">'+err+'</div>';
-  }
-  next();
-});
-//End added for mongoose
+    next();
+})
 
-app.use('/', routes);
-app.use('/users', users);
-//app.use(express.static('static'));
-app.use('/error', function(req, res, next){
-  res.status(err.status || 500).render('error', {
-    message: '服务器内部错误',
-    error: {}
-  });
-});
-
-// error handlers
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  var err = new Error('Not Found');
-  err.status = 404;
-  console.log('error: 404');
-  next(err);
-});
-
-// production error handler
-// no stacktraces leaked to user
-app.use(function(err, req, res, next) {
-  res.status(err.status || 500).render('error', {
-    message: err.message,
-    error: {}
-  });
-});
+//路由处理文件
+router.init(app);
 
 module.exports = app;
