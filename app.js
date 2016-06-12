@@ -25,6 +25,7 @@ app.use(session({
 }));
 
 // view engine setup
+swig.setDefaults({ loader: swig.loaders.fs(__dirname + '/views/templates') });
 app.set('views', path.join(process.cwd(), 'views'));
 // app.set('view engine', 'jade');
 // app.set('view engine', 'ejs');

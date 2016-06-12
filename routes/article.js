@@ -7,9 +7,13 @@ var config = require(path.join(process.cwd(), 'config', 'config'));
 /* GET users listing. */
 router.get('/', function(req, res, next) {
   // var addr = fs.readdirSync(__dirname);
-  var addr = fs.readdirSync(config.get('articlePath'));
+  // var addr = fs.readdirSync(config.get('articlePath'));
+  var addr = fs.readdirSync(config.get('homePath'));
 
-  res.send(addr);
+  // res.send(addr);
+  res.render('article/article', {
+      paths: addr
+  });
 });
 
 //article路由未找到匹配的情况

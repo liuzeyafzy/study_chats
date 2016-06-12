@@ -5,6 +5,7 @@ const path = require('path');
 
 const config = {
     'hostnameRegExp': /liuzeyafzy.com$/,
+    'homePath': process.cwd(),
     'articlePath': path.join(process.cwd(), 'article')
 }
 
