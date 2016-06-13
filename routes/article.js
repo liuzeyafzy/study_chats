@@ -4,55 +4,48 @@ var path = require('path');
 const fs = require('fs');
 var config = require(path.join(process.cwd(), 'config', 'config'));
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  getFileFromPaths(req, res, next, '');
-});
-
-// router.param('paths', function (req, res, next, paths) {
-//     getFileFromPaths(req, res, next, paths);
-// });
-// router.get('/:paths', function(req, res, next){
-//     next();
-// })
-
 //article全路径遍历
-router.use(function(req, res, next) {
-    getFileFromPaths(req, res, next, req.path);
+router.delete('*', function(req, res, next){
+    var paths = req.path;
+    paths = decodeURI(paths);
+    var totalPath = path.join(config.get('articlePath'), paths);
+    //TODO暂时的条件为注册用户才能删除，后面要修改为有权限的用户才能删除
+    if(req.session.user){
+        console.log('user');
+        if(true === fs.statSync(totalPath).isFile()){
+            fs.unlink(totalPath, (err) => {
+                if (err) throw err;
+                console.log('successfully deleted' + totalPath);
+                res.send({msg:'删除成功',code: 0});
+            });
+        }else if(true === fs.statSync(totalPath).isDirectory()){
+            //TODO: 删除需要使用递归删除的方法，目前的方法不能删除非空文件夹
+            fs.rmdir(totalPath, (err) => {
+                if (err) throw err;
+                console.log('successfully deleted' + totalPath);
+                res.send({msg:'删除成功',code: 0});
+            });
+        }
+    }else{
+        console.log('no user');
+        res.status(501);
+        res.send({msg:'无删除权限',code: 501});
+    }
 });
 
-function getFileFromPaths(req, res, next, paths){
-    // console.log(req.session);
-    // console.log(req.baseUrl);
+router.get('*',function(req, res, next){
+    var paths = req.path;
     paths = decodeURI(paths);
     var totalPath = path.join(config.get('articlePath'), paths);
     if(true === fs.statSync(totalPath).isFile()){
         if('/download' === req.baseUrl){
             res.download(totalPath);
         }else if('/article' === req.baseUrl){
-            console.log(req.method.toLowerCase());
-            if('delete' === req.method.toLowerCase()){
-                // if(req.session.user){//暂时的条件为注册用户才能删除
-                if(true){
-                    console.log('user');
-                    fs.unlink(totalPath, (err) => {
-                        if (err) throw err;
-                        console.log('successfully deleted' + totalPath);
-                        // var tmpN = paths.lastIndexOf('/');
-                        // var dir = paths.slice(0, tmpN);
-                        res.send({msg:'删除成功',code: 0});
-                        // res.redirect(path.join('/article',dir));
-                    });
-                }else{
-                    res.status = 500;
-                    res.send({msg:'无删除权限',code: 501});
-                }
-            }else{
-                fs.readFile(totalPath, function (err,data){
-                    res.contentType(express.static.mime.lookup(totalPath))
-                    res.send(data);
-                });
-            }
+            //读取文件
+            fs.readFile(totalPath, function (err,data){
+                res.contentType(express.static.mime.lookup(totalPath));
+                res.send(data);
+            });
         }else{
             console.log(req.baseUrl);
         }
@@ -77,8 +70,19 @@ function getFileFromPaths(req, res, next, paths){
         });
     }else{
         res.send('并没有找到所要的文件');
-        // res.send(req.hostname);
     }
-}
+});
+
+router.put('*', function(req, res, next){
+    //TODO:这里需要增加一个判断，只有已登录用户才能操作，未登录用户回到登录页面
+    var paths = req.path;
+    paths = decodeURI(paths);
+    var totalPath = path.join(config.get('articlePath'), paths);
+    //TODO:这里需要对上传文件进行编码
+});
+
+router.use(function(req, res, next) {
+    res.send('并没有找到所要的文件');
+});
 
 module.exports = router;
