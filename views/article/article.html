@@ -1,37 +1,39 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <style>
-    .login-title{
-      margin-left:20px;
-    }
-    .login-rows{
-      margin: 10px 0;
-    }
-    .login-rows-name{
-      float: left;
-      width: 80px;
-      text-align: center;
-    }
-    .login-btn{
-      display: inline-block;
-      margin-left: 50px;
-      width: 150px;
-      height: 35px;
-      line-height: 35px;
-      background-color: #E42D2D;
-      text-align: center;
-      color: #fff;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-    </style>
-    <ul>
-        {% for path in paths %}
-            <li><a>{{ path }}</a></li>
-        {% endfor %}
-    </ul>
+    {% if paths.length %}
+        <ul>
+            <li><a href="/article">返回根目录</a></li>
+            <li><a href="{{ dir }}">返回上一级</a></li>
+            {% for path in paths %}
+                <li>
+                    <!-- <a href="{{ path[1] }}">{{ path[0] }}</a> -->
+                    <a href="{{ path['viewUrl'] }}">{{ path['name'] }}</a>
+                    {% if path['isFile'] %}
+                    <a class="download" style="margin-left:4em;" href="{{ path['downloadUrl'] }}">下载</a>
+                    <a class="delete" style="margin-left:4em;" data-href="{{ path['viewUrl'] }}">删除</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Empty</p>
+    {% endif %}
 {% endblock %}
 
 {% block script %}
+<script>
+    $('.delete').on('click', function(){
+        $.ajax({
+            url: $(this).attr('data-href'),
+            type: 'delete',
+            success: function(){
+                location.reload();
+            },
+            error: function(){
+
+            }
+        })
+    })
+</script>
 {% endblock %}

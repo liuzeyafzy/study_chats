@@ -19,7 +19,8 @@ module.exports = {
         });
 
         app.use('/', index);
-        app.use('/article', article);
+        app.use('/article', article);//删除从这里进入，只是请求方法为delete
+        app.use('/download', article);//下载也走进article，只是对于返回文件的方式不一样
         app.use('/users', users);
         app.use('/error', function(req, res, next){
           res.status(err.status || 500).render('error', {
