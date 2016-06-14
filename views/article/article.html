@@ -1,33 +1,57 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-        <ul>
-            <li><a href="/article">返回根目录</a></li>
-            <li><a href="{{ dir }}">返回上一级</a></li>
-            {% for path in paths %}
-                <li>
-                    <!-- <a href="{{ path[1] }}">{{ path[0] }}</a> -->
-                    {% if !path['isFile'] %}文件夹：{% endif %}<a href="{{ path['viewUrl'] }}">{{ path['name'] }}</a>
-                    <a class="download" style="margin-left:4em;" href="{{ path['downloadUrl'] }}">下载</a>
-                    <a class="delete" style="margin-left:4em;" data-href="{{ path['viewUrl'] }}">删除</a>
-                </li>
-            {% endfor %}
-        </ul>
+    <!-- <form id="myForm"> -->
+        <input id="input" type="file"></input>
+        <button id="submit" onclick="doSubmit()">提交</button>
+    <!-- </form> -->
+    <ul>
+        <li><a href="/article">返回根目录</a></li>
+        <li><a href="{{ subdir }}">返回上一级</a></li>
+        {% for path in paths %}
+            <li>
+                <!-- <a href="{{ path[1] }}">{{ path[0] }}</a> -->
+                {% if !path['isFile'] %}文件夹：{% endif %}<a href="{{ path['viewUrl'] }}">{{ path['name'] }}</a>
+                <a class="download" style="margin-left:2em;" href="{{ path['downloadUrl'] }}">下载</a>
+                <a class="delete" style="margin-left:2em;" data-href="{{ path['viewUrl'] }}">删除</a>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock %}
 
 {% block script %}
-<script>
-    $('.delete').on('click', function(){
-        $.ajax({
-            url: $(this).attr('data-href'),
-            type: 'delete',
-            success: function(){
-                location.reload();
-            },
-            error: function(){
+    <script>
+        $('.delete').on('click', function(){
+            $.ajax({
+                url: $(this).attr('data-href'),
+                type: 'delete',
+                success: function(){
+                    location.reload();
+                },
+                error: function(){
 
+                }
+            })
+        });
+
+        function doSubmit(){
+            var selectedFile = document.getElementById('input').files[0];
+            var reader = new FileReader();
+            reader.onload = function(oFREvent){
+                var oReq = new XMLHttpRequest();
+                oReq.responseType = "json";
+                oReq.onload = function(){
+                    var res = oReq.response;
+                    if(0 === res.code){
+                        location.reload();
+                    }else{
+                        console.log(res.msg);
+                    }
+                }
+                oReq.open("put", "{{ dir }}/" + selectedFile.name);
+                oReq.send(oFREvent.target.result);
             }
-        })
-    })
-</script>
+            reader.readAsArrayBuffer(selectedFile);
+        }
+    </script>
 {% endblock %}

@@ -3,6 +3,7 @@ var router = express.Router();
 var path = require('path');
 const fs = require('fs');
 var config = require(path.join(process.cwd(), 'config', 'config'));
+var rmdir = require('rmdir');
 
 //article全路径遍历
 router.delete('*', function(req, res, next){
@@ -19,8 +20,8 @@ router.delete('*', function(req, res, next){
                 res.send({msg:'删除成功',code: 0});
             });
         }else if(true === fs.statSync(totalPath).isDirectory()){
-            //TODO: 删除需要使用递归删除的方法，目前的方法不能删除非空文件夹
-            fs.rmdir(totalPath, (err) => {
+            //递归删除的方法，能删除非空文件夹
+            rmdir(totalPath, (err) => {
                 if (err) throw err;
                 console.log('successfully deleted' + totalPath);
                 res.send({msg:'删除成功',code: 0});
@@ -63,9 +64,10 @@ router.get('*',function(req, res, next){
         }
 
         var tmpN = paths.lastIndexOf('/');
-        var dir = paths.slice(0, tmpN);
+        var subdir = paths.slice(0, tmpN);
         res.render('article/article', {
-            dir: path.join('/article',dir),
+            subdir: path.join('/article',subdir),
+            dir: path.join('/article',paths),
             paths: obj
         });
     }else{
@@ -78,7 +80,15 @@ router.put('*', function(req, res, next){
     var paths = req.path;
     paths = decodeURI(paths);
     var totalPath = path.join(config.get('articlePath'), paths);
-    //TODO:这里需要对上传文件进行编码
+    req.on('data', function(c){
+        // console.log('C: %j', c );
+        //fs.WriteStream('host.txt', c);
+        fs.appendFile(totalPath, c);
+        console.log('Write data OK.');
+    }).on('end', function(){
+        res.status(200).send({msg:'操作成功',code: 0});
+    });
+
 });
 
 router.use(function(req, res, next) {
