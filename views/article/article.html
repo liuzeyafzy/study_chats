@@ -39,6 +39,15 @@
             var reader = new FileReader();
             reader.onload = function(oFREvent){
                 var oReq = new XMLHttpRequest();
+                oReq.addEventListener("progress", function(oEvent){
+                    if (oEvent.lengthComputable) {
+                        var percentComplete = oEvent.loaded / oEvent.total;
+                        console.log(percentComplete);
+                        // ...
+                    } else {
+                        // Unable to compute progress information since the total size is unknown
+                    }
+                });
                 oReq.responseType = "json";
                 oReq.onload = function(){
                     var res = oReq.response;

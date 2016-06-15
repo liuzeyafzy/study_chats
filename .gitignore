@@ -1,5 +1,5 @@
 ssl/
-article/
+./article/
 node_modules/
 client.crt
 
