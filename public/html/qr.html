@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>工具：二维码处理</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <style>
+      .container{
+        max-width:800px;
+        margin:0 auto;
+      }
+      .qr-text{
+        display: block;
+        margin: 0 auto;
+        width: 100%;
+        min-height: 300px;
+      }
+      .qr-pic{
+        display: flex;
+        align-items: center;
+        margin:0 auto;
+        width: 100%;
+        min-height:300px;
+        border: 1px solid rgb(169,169,169);
+      }
+      .qr-btn{
+        display: block;
+        margin: 10px auto;
+        text-align: center;
+        width: 100px;
+      }
+      .qr-tip{
+        display: block;
+        margin: 0 auto;
+        word-wrap: break-word;
+        word-break: break-all;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="container">
+      <ul>
+        <li>生成二维码</li>
+        <li>读取二维码</li>
+      </ul>
+    </section>
+    <section class="container">
+      <!--参照cli.im的处理，使用bootstrap进行布局即可，左8右4-->
+      <div class="col-md-8 col-sm-8">
+        <textarea class="qr-text"></textarea>
+        <a class="qr-btn">生成二维码</a>
+      </div>
+      <div class="col-md-4 col-sm-4">
+        <div class="qr-pic">
+          <img />
+          <span class="qr-tip">左侧输入内容，点击生成二维码</span>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>
