@@ -17,6 +17,6 @@ $(function(){
       error: function(data, error){
         location.href = 'register';
       }
-    })
-  })
+    });
+  });
 });

@@ -8,23 +8,31 @@
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <style>
+      canvas{
+        background-color: #ccc;
+      }
       .container{
         max-width:800px;
         margin:0 auto;
       }
-      .qr-text{
+      .qr-text, .qr-file{
         display: block;
         margin: 0 auto;
         width: 100%;
         min-height: 300px;
+        border: 1px solid rgb(169,169,169);
       }
-      .qr-pic{
+      .qr-pic, .qr-value{
         display: flex;
         align-items: center;
         margin:0 auto;
         width: 100%;
         min-height:300px;
         border: 1px solid rgb(169,169,169);
+      }
+      .qr-pic>canvas{
+        margin: 0 auto;
+        max-width: 85%;
       }
       .qr-btn{
         display: block;
@@ -39,7 +47,129 @@
         word-break: break-all;
         text-align: center;
       }
+      
+      .qr-encode-container, .qr-decode-container{
+        margin-bottom: 20px;
+      }
     </style>
+    
+    <script type="text/javascript" src="/plugin/decodeQR/grid.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/version.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/detector.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/formatinf.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/errorlevel.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/bitmat.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/datablock.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/bmparser.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/datamask.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/rsdecoder.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/gf256poly.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/gf256.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/decoder.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/qrcode.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/findpat.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/alignpat.js"></script>
+    <script type="text/javascript" src="/plugin/decodeQR/databr.js"></script>
+    
+    <script type="text/javascript">
+      var gCtx = null;
+      var gCanvas = null;
+      
+      var imageData = null;
+      var ii=0;
+      var jj=0;
+      var c=0;
+      
+      function dragenter(e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      
+      function dragover(e) {
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      function drop(e) {
+        e.stopPropagation();
+        e.preventDefault();
+      
+        var dt = e.dataTransfer;
+        var files = dt.files;
+      
+        handleFiles(files);
+      }
+      
+      function handleFiles(f) {
+        var o=[];
+        for(var i =0;i<f.length;i++){
+          var reader = new FileReader();
+          
+          reader.onload = (function(theFile) {
+            return function(e) {
+              qrcode.decode(e.target.result);
+            };
+          })(f[i]);
+      
+          // Read in the image file as a data URL.
+          reader.readAsDataURL(f[i]);
+        }
+      }
+      
+      function read(a) {
+        // alert(a);
+        $('.qr-value').val(a);
+      }
+      
+      function load(src){
+        initCanvas(640,480);
+        qrcode.callback = read;
+        qrcode.decode(src);
+      }
+      
+      function initCanvas(ww,hh){
+        gCanvas = document.getElementById("qr-canvas");
+        gCanvas.addEventListener("dragenter", dragenter, false);
+        gCanvas.addEventListener("dragover", dragover, false);
+        gCanvas.addEventListener("drop", drop, false);
+        var w = ww;
+        var h = hh;
+        gCanvas.style.width = w + "px";
+        gCanvas.style.height = h + "px";
+        gCanvas.width = w;
+        gCanvas.height = h;
+        gCtx = gCanvas.getContext("2d");
+        gCtx.clearRect(0, 0, w, h);
+        imageData = gCtx.getImageData( 0,0,320,240);
+      }
+      
+      function passLine(stringPixels) {
+        //a = (intVal >> 24) & 0xff;
+        var coll = stringPixels.split("-");
+        for(var i=0;i<320;i++) {
+          var intVal = parseInt(coll[i]);
+          r = (intVal >> 16) & 0xff;
+          g = (intVal >> 8) & 0xff;
+          b = (intVal ) & 0xff;
+          imageData.data[c+0]=r;
+          imageData.data[c+1]=g;
+          imageData.data[c+2]=b;
+          imageData.data[c+3]=255;
+          c+=4;
+        }
+      
+        if(c>=320*240*4) {
+          c=0;
+          gCtx.putImageData(imageData, 0,0);
+        }
+      }
+      
+      function captureToCanvas() {
+        flash = document.getElementById("embedflash");
+        flash.ccCapture();
+        qrcode.decode();
+      }
+    </script>
+    
   </head>
   <body>
     <section class="container">
@@ -48,18 +178,75 @@
         <li>读取二维码</li>
       </ul>
     </section>
-    <section class="container">
+    
+    <section class="container qr-encode-container">
       <!--参照cli.im的处理，使用bootstrap进行布局即可，左8右4-->
       <div class="col-md-8 col-sm-8">
         <textarea class="qr-text"></textarea>
-        <a class="qr-btn">生成二维码</a>
+        <a class="qr-btn qr-encode-btn">生成二维码</a>
       </div>
       <div class="col-md-4 col-sm-4">
-        <div class="qr-pic">
-          <img />
+        <div class="qr-pic" id="qr-pic">
           <span class="qr-tip">左侧输入内容，点击生成二维码</span>
         </div>
       </div>
     </section>
+    
+    <section class="container qr-decode-container">
+      <!--参照cli.im的处理，使用bootstrap进行布局即可，左8右4-->
+      <div class="col-md-8 col-sm-8">
+        <div class="qr-file">
+          <input id="qr-file-input" type="file" />
+          <img src="" height="200" alt="Image preview...">
+        </div>
+        <!--<a class="qr-btn qr-decode-btn">读取二维码</a>-->
+      </div>
+      <div class="col-md-4 col-sm-4">
+        <textarea class="qr-value" disabled="disabled"></textarea>
+      </div>
+    </section>
+    
+    <canvas style="display: none;" id="qr-canvas" width="640" height="480"></canvas>
+    
+    <script src="/javascripts/plugin/jquery-2.1.4.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <script src="/plugin/jquery-qrcode/jquery.qrcode.js"></script>
+    <script src="/plugin/jquery-qrcode/qrcode.js"></script>
+    <script>
+      $(function(){
+        $('.qr-encode-btn').on('click', function(){
+          var text = $('.qr-text').val();
+          if('' == text){
+            $('.qr-pic').empty().html('<span class="qr-tip">请输入内容</span>');
+            return false;
+          }
+          $('#qr-pic').empty().qrcode({
+            text	: text
+          });
+        });
+        
+        var reader = new FileReader();
+        $('#qr-file-input').on('change', function(){
+          var preview = document.querySelector('img');
+          var selectedFile = document.getElementById('qr-file-input').files[0];
+          reader = new FileReader();
+          reader.addEventListener("load", function () {
+            preview.src = reader.result;
+            load(reader.result);
+          }, false);
+          if(selectedFile){
+            reader.readAsDataURL(selectedFile);
+          }
+        });
+        
+        // $('.qr-decode-btn').on('click', function(){
+        //   if(reader.result){
+        //     load(reader.result);
+        //   }
+        // });
+      })
+    </script>
   </body>
+  
 </html>
