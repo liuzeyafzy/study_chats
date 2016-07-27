@@ -4,6 +4,7 @@
 var index = require('./index');
 var users = require('./users');
 var article = require('./article');
+var qr = require('./qr');
 
 module.exports = {
     init: function(app){
@@ -22,6 +23,7 @@ module.exports = {
         app.use('/article', article);//删除从这里进入，只是请求方法为delete
         app.use('/download', article);//下载也走进article，只是对于返回文件的方式不一样
         app.use('/users', users);
+        app.use('/qr', qr);
         app.use('/error', function(req, res, next){
           res.status(err.status || 500).render('error', {
             message: '服务器内部错误',
