@@ -18,6 +18,6 @@ $(function(){
         console.log('error');
         alert(data.responseText);
       }
-    })
-  })
-})
+    });
+  });
+});
