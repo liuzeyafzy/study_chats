@@ -8,7 +8,7 @@ var debug = require('debug')('express:server');
 var fs = require('fs');
 var http = require('http');
 var https = require('spdy');
-var LEX = require('letsencrypt-express').testing();
+var LEX = require('letsencrypt-express');
 
 // Change these two lines!
 var DOMAIN = 'liuzeyafzy.com';
