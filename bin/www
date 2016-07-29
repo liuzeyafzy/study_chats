@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+'use strict';
 /**
  * Module dependencies.
  */
@@ -7,21 +7,40 @@ var app = require('../app');
 var debug = require('debug')('express:server');
 var fs = require('fs');
 var http = require('http');
-var https = require('https');
+var https = require('spdy');
+var LEX = require('letsencrypt-express').testing();
 
-/**
- * Create HTTP server.
- * Cannot find another way to find whether the file exist or not.
- */
-var privateKey = fs.readFileSync('ssl/client.key', 'utf8');
-var certificate = fs.readFileSync('ssl/client.crt', 'utf8');
+// Change these two lines!
+var DOMAIN = 'liuzeyafzy.com';
+var EMAIL = 'liuzeyafzy@gmail.com';
+
+var lex = LEX.create({
+  configDir: require('os').homedir() + '/letsencrypt/etc'
+, approveRegistration: function (hostname, approve) { // leave `null` to disable automatic registration
+    if (hostname === DOMAIN) { // Or check a database or list of allowed domains
+      approve(null, {
+        domains: [DOMAIN]
+      , email: EMAIL
+      , agreeTos: true
+      });
+    }
+  }
+});
+
+// /**
+// * Create HTTP server.
+// * Cannot find another way to find whether the file exist or not.
+// */
+// var privateKey = fs.readFileSync('ssl/client.key', 'utf8');
+// var certificate = fs.readFileSync('ssl/client.crt', 'utf8');
 
 /**
  * Get port from environment and store in Express.
  */
 var port = normalizePort(process.env.PORT || '443');
 app.set('port', port);
-var server = https.createServer({key: privateKey, cert: certificate, passphrase:'as123456'}, app);
+// var server = https.createServer({key: privateKey, cert: certificate, passphrase:'as123456'}, app);
+var server = https.createServer(lex.httpsOptions, LEX.createAcmeResponder(lex, app));
 
 var httpServer = http.createServer(function(req, res){
     res.writeHead(307, { "Location": "https://" + req.headers['host'] + req.url });
