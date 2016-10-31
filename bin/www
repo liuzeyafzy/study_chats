@@ -55,6 +55,10 @@ var server = https.createServer(lex.httpsOptions, lex.middleware(app)).listen(44
 require('http').createServer(lex.middleware(require('redirect-https')())).listen(80, function () {
   console.log("Listening for ACME http-01 challenges on", this.address());
 });
+//var httpServer = http.createServer(function(req, res){
+  //  res.writeHead(307, { "Location": "https://" + req.headers['host'] + req.url });
+  //  res.end();
+//}).listen(80);
 
 var io = require('socket.io')(server);
 io.on('connection', function(socket){
