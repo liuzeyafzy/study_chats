@@ -12,7 +12,6 @@ var LEX = require('letsencrypt-express');
 
 // Change these two lines!
 var DOMAIN = 'liuzeyafzy.com';
-//var DOMAIN = '23.83.239.67';
 var EMAIL = 'liuzeyafzy@gmail.com';
 
 var lex = LEX.create({
@@ -43,13 +42,6 @@ function approveDomains(opts, certs, cb) {
 
   cb(null, { options: opts, certs: certs });
 }
-
-// /**
-// * Create HTTP server.
-// * Cannot find another way to find whether the file exist or not.
-// */
-// var privateKey = fs.readFileSync('ssl/client.key', 'utf8');
-// var certificate = fs.readFileSync('ssl/client.crt', 'utf8');
 
 /**
  * Get port from environment and store in Express.
