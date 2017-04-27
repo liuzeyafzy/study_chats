@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+'use strict';
 /**
  * Module dependencies.
  */
@@ -7,26 +7,58 @@ var app = require('../app');
 var debug = require('debug')('express:server');
 var fs = require('fs');
 var http = require('http');
-var https = require('https');
+var https = require('spdy');
+var LEX = require('letsencrypt-express');
 
-/**
- * Create HTTP server.
- * Cannot find another way to find whether the file exist or not.
- */
-var privateKey = fs.readFileSync('ssl/client.key', 'utf8');
-var certificate = fs.readFileSync('ssl/client.crt', 'utf8');
+// Change these two lines!
+var DOMAIN = 'liuzeyafzy.com';
+var EMAIL = 'liuzeyafzy@gmail.com';
+
+var lex = LEX.create({
+  server: 'https://acme-v01.api.letsencrypt.org/directory'
+, email: EMAIL
+, acme: require('le-acme-core').ACME.create()
+, approveDomains: approveDomains
+});
+
+function approveDomains(opts, certs, cb) {
+  // This is where you check your database and associated
+  // email addresses with domains and agreements and such
+
+
+  // The domains being approved for the first time are listed in opts.domains
+  // Certs being renewed are listed in certs.altnames
+  if (certs) {
+    opts.domains = DOMAIN;
+  }
+  else {
+    opts.email = EMAIL;
+    opts.agreeTos = true;
+  }
+
+  // NOTE: you can also change other options such as `challengeType` and `challenge`
+  // opts.challengeType = 'http-01';
+  // opts.challenge = require('le-challenge-fs').create({});
+
+  cb(null, { options: opts, certs: certs });
+}
 
 /**
  * Get port from environment and store in Express.
  */
 var port = normalizePort(process.env.PORT || '443');
 app.set('port', port);
-var server = https.createServer({key: privateKey, cert: certificate, passphrase:'as123456'}, app);
-
-var httpServer = http.createServer(function(req, res){
-    res.writeHead(307, { "Location": "https://" + req.headers['host'] + req.url });
-    res.end();
-}).listen(80);
+// var server = https.createServer({key: privateKey, cert: certificate, passphrase:'as123456'}, app);
+var server = https.createServer(lex.httpsOptions, lex.middleware(app)).listen(443, function(){
+  console.log("Listening for ACME tls-sni-01 challenges and serve app on", this.address())
+});
+require('http').createServer(lex.middleware(require('redirect-https')())).listen(80, function () {
+  console.log("Listening for ACME http-01 challenges on", this.address());
+});
+//var httpServer = http.createServer(function(req, res){
+  //  res.writeHead(307, { "Location": "https://" + req.headers['host'] + req.url });
+  //  res.end();
+//}).listen(80);
 
 var io = require('socket.io')(server);
 io.on('connection', function(socket){

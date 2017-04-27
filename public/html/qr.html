@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
     <title>工具：二维码处理</title>
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" crossorigin="anonymous">
 
     <!-- Optional theme -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" crossorigin="anonymous">
     <style>
       canvas{
         background-color: #ccc;
@@ -27,7 +29,7 @@
         align-items: center;
         margin:0 auto;
         width: 100%;
-        min-height:300px;
+        min-height:220px;
         border: 1px solid rgb(169,169,169);
       }
       .qr-pic>canvas{
@@ -47,12 +49,30 @@
         word-break: break-all;
         text-align: center;
       }
+<<<<<<< HEAD
       
+=======
+      #qr-file-input{
+        height: 40px;
+        width: 100%;
+        border: 1px solid #ccc;
+        margin: 0 auto;
+      }
+      .preview-img{
+        display: block;
+        margin: 0 auto;
+        text-align: center;
+      }
+>>>>>>> f6072c21d176991e35a1e869335be7c752476e34
       .qr-encode-container, .qr-decode-container{
         margin-bottom: 20px;
       }
     </style>
+<<<<<<< HEAD
     
+=======
+    <script src="/plugin/localforage.js"></script>
+>>>>>>> f6072c21d176991e35a1e869335be7c752476e34
     <script type="text/javascript" src="/plugin/decodeQR/grid.js"></script>
     <script type="text/javascript" src="/plugin/decodeQR/version.js"></script>
     <script type="text/javascript" src="/plugin/decodeQR/detector.js"></script>
@@ -118,6 +138,19 @@
       function read(a) {
         // alert(a);
         $('.qr-value').val(a);
+<<<<<<< HEAD
+=======
+        localforage.getItem('decode.history').then(function(value){
+          if(null === value){
+            localforage.setItem('decode.history', [a]);
+          }else{
+            value.push(a);
+            localforage.setItem('decode.history', value);
+          }
+        }).catch(function(err){
+          console.log(err);
+        });
+>>>>>>> f6072c21d176991e35a1e869335be7c752476e34
       }
       
       function load(src){
@@ -181,17 +214,39 @@
     
     <section class="container qr-encode-container">
       <!--参照cli.im的处理，使用bootstrap进行布局即可，左8右4-->
-      <div class="col-md-8 col-sm-8">
+      <div class="col-md-8 col-sm-12">
         <textarea class="qr-text"></textarea>
         <a class="qr-btn qr-encode-btn">生成二维码</a>
+<<<<<<< HEAD
       </div>
       <div class="col-md-4 col-sm-4">
         <div class="qr-pic" id="qr-pic">
           <span class="qr-tip">左侧输入内容，点击生成二维码</span>
+=======
+      </div>
+      <div class="col-md-4 col-sm-12">
+        <div class="qr-pic" id="qr-pic">
+          <span class="qr-tip">输入内容，点击生成二维码</span>
         </div>
       </div>
     </section>
     
+    <section class="container qr-decode-container">
+      <!--参照cli.im的处理，使用bootstrap进行布局即可，左8右4-->
+      <div class="col-md-8 col-sm-12">
+        <div class="qr-file">
+          <input id="qr-file-input" type="file" />
+          <img class="preview-img" src="" height="200" alt="Image preview...">
+>>>>>>> f6072c21d176991e35a1e869335be7c752476e34
+        </div>
+        <!--<a class="qr-btn qr-decode-btn">读取二维码</a>-->
+      </div>
+      <div class="col-md-4 col-sm-12">
+        <textarea class="qr-value" disabled="disabled"></textarea>
+      </div>
+    </section>
+    
+<<<<<<< HEAD
     <section class="container qr-decode-container">
       <!--参照cli.im的处理，使用bootstrap进行布局即可，左8右4-->
       <div class="col-md-8 col-sm-8">
@@ -206,11 +261,17 @@
       </div>
     </section>
     
+=======
+>>>>>>> f6072c21d176991e35a1e869335be7c752476e34
     <canvas style="display: none;" id="qr-canvas" width="640" height="480"></canvas>
     
     <script src="/javascripts/plugin/jquery-2.1.4.js"></script>
     <!-- Latest compiled and minified JavaScript -->
+<<<<<<< HEAD
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+=======
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js" crossorigin="anonymous"></script>
+>>>>>>> f6072c21d176991e35a1e869335be7c752476e34
     <script src="/plugin/jquery-qrcode/jquery.qrcode.js"></script>
     <script src="/plugin/jquery-qrcode/qrcode.js"></script>
     <script>
@@ -224,6 +285,19 @@
           $('#qr-pic').empty().qrcode({
             text	: text
           });
+<<<<<<< HEAD
+=======
+          localforage.getItem('encode.history').then(function(value){
+            if(null === value){
+              localforage.setItem('encode.history', [text]);
+            }else{
+              value.push(text);
+              localforage.setItem('encode.history', value);
+            }
+          }).catch(function(err){
+            console.log(err);
+          });
+>>>>>>> f6072c21d176991e35a1e869335be7c752476e34
         });
         
         var reader = new FileReader();

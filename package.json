@@ -12,16 +12,22 @@
     "connect-mongo": "^1.1.0",
     "cookie-parser": "~1.3.5",
     "debug": "~2.2.0",
+    "ejs": "~2.3.3",
     "express": "~4.13.1",
     "express-session": "^1.12.1",
     "jade": "~1.11.0",
-    "ejs": "~2.3.3",
-    "swig": "",
-    "rmdir": "",
-    "mongoose": "^4.4.13",
+    "le-acme-core": "^2.0.7",
+    "le-challenge-fs": "^2.0.8",
+    "le-store-certbot": "^2.0.3",
+    "letsencrypt-express": "^2.0.5",
+    "mongoose": "^4.5.7",
     "morgan": "~1.6.1",
     "multer": "^1.1.0",
+    "redirect-https": "^1.1.0",
+    "rmdir": "",
     "serve-favicon": "~2.3.0",
-    "socket.io": "^1.4.5"
+    "socket.io": "^1.4.5",
+    "spdy": "^3.3.4",
+    "swig": ""
   }
 }
